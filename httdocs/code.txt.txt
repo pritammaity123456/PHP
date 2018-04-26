@@ -1,0 +1,3 @@
+SELECT max(mm_amc_master.amc_id),mm_amc_master.end_date from mm_amc_master group by mm_amc_master.order_id order by mm_amc_master.end_date ASC 
+
+select od.order_id,cli.client_name, am.amount, am.invoice_no, am.invoice_date,am.starting_date, am.end_date from mm_client_master cli, mm_order_master od, mm_amc_master am WHERE od.client_id = cli.client_id and od.order_id = am.order_id and am.end_date BETWEEN '2015/01/01'and '2017/03/03' and am.amc_id in(SELECT max(am.amc_id) from mm_amc_master am group by am.order_id )order by am.end_date ASC 
