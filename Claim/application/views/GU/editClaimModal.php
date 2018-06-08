@@ -3,8 +3,9 @@
     var total = 0;
 
     $("#addrow").click(function(){
-      $("#intro").append('<tr><td><select class="custom-select preferenceSelect" name="chead[]" style="width: 150px;"><option>Select</option><?php foreach ($chead as $aldta):?><option value="<?php echo $aldta->head_desc?>"><?php echo $aldta->head_desc?></option><?php endforeach;?> </select></td><td><textarea name="remarks[]" class="form-control"  rows="1" cols="35"></textarea></td><td><input type="text" name="amount[]" class=" form-control amount_cls"></td><td><button class="btn btn-danger" id="removeRow"><i class="fa fa-undo" aria-hidden="true"></i></button></td></tr>');
+      $("#intro").append('<tr><td><select class="custom-select preferenceSelect" name="chead[]" style="width: 150px;"><option>Select</option><?php foreach ($chead as $aldta):?><option value="<?php echo $aldta->head_desc?>"><?php echo $aldta->head_desc?></option><?php endforeach;?> </select></td><td><textarea name="remarks[]" class="form-control"  rows="1" cols="35"></textarea></td><td><input type="text" name="amount[]" class=" form-control amount_cls"></td><td><button class="btn btn-danger" data-toggle="tooltip" data-original-title="Remove Row" data-placement="bottom" id="removeRow" id="removeRow"><i class="fa fa-remove" aria-hidden="true"></i></button></td></tr>');
       $('.preferenceSelect').change();
+      $('[data-toggle="tooltip"]').tooltip({trigger: "hover"});
     });
 
 
@@ -23,7 +24,7 @@
     });
     
     $('.preferenceSelect').change();
-
+    $('[data-toggle="tooltip"]').tooltip({trigger: "hover"});
   });
 
   $(".livesearch").select2();
@@ -125,12 +126,12 @@
         <label>Claim Date:</label>
         <input type="text" class="form-control" value="<?php echo date('d/m/Y',strtotime($claim->claim_dt)); ?>" readonly>
       </div>
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-9">
           <label for="projectName">Project Name:</label>
           <div>
-          <select class="custom-select livesearch" style="width: 185px;" id="projectName" name="projectName" required>
+          <select class="custom-select livesearch" style="width: 316px;" id="projectName" name="projectName" required>
             <?php foreach ($project_name as $aldta):?>
-                    <option value="<?php echo $aldta->project_name;?>" <?php echo ($claim->project_name == $aldta->project_name)?'selected':'';?>><?php echo $aldta->project_name;?></option>
+                    <option value='{"pName":"<?php echo $aldta->project_name;?>","pType":"<?php echo $aldta->project_type;?>" }' <?php echo ($claim->project_name == $aldta->project_name)?'selected':'';?>><?php echo $aldta->project_name.' '.$aldta->project_type;?></option>
                     <?php
                     endforeach;
                     ?>
@@ -143,16 +144,16 @@
         <label for="claimCode">Claim Code:</label>
         <input type="text" class="form-control" value="<?php echo $claim->claim_cd;?>" readonly>
       </div>    
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-8">
         <label for="purpose">Purpose:</label>
         <div>
-        <select class="custom-select" id="purpose" name="purpose" style="width: 185px;" required>
+        <select class="custom-select livesearch" id="purpose" name="purpose" style="width: 316px;" required>
               <?php foreach ($purpose as $aldta):?>
                     <option value="<?php echo $aldta->purpose_desc?>" <?php echo ($claim->purpose == $aldta->purpose_desc)?'selected':'';?>><?php echo $aldta->purpose_desc;?></option>
                     <?php
                     endforeach;
                     ?>
-        </select>
+            </select>
       </div>
     </div>
   </div>
@@ -161,30 +162,21 @@
         <label for="dp1">From Date:</label>
         <input type="text" class="form-control" id="dp1" name="date1" value="<?php echo date('d/m/Y',strtotime($claim->from_dt));?>" placeholder="DD/MM/YYYY" required>
     </div>
+    <div class="form-group col-md-2">
+    </div>
     <div class="form-group col-md-3">
         <label for="dp2">To Date:</label>
         <input type="text" class="form-control" id="dp2" name ="date2" value="<?php echo date('d/m/Y',strtotime($claim->to_dt));?>" placeholder="DD/MM/YYYY" required>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-4">
       <div class="alert alert-danger" id="d1alert">Supplied date can't be greater than system date!</div>
        <div class="alert alert-danger" id="d2alert">Supplied date can't be greater than system date!</div>
      </div>  
-    <div class="form-group col-md-6">
-        <label for="project">Project Type:</label>
-        <div>
-        <select class="custom-select" id="project" name="projectType" style="width: 185px;" required>
-             <?php foreach ($project_type as $aldta):?>
-                    <option value="<?php echo $aldta->type_desc?>" <?php echo ($claim->project_type == $aldta->type_desc)?'selected':'';?>><?php echo $aldta->type_desc?></option>
-                    <?php
-                    endforeach;
-                    ?>
-            </select>
-      </div>
-    </div>
+    
     
   </div>
   <div class="form-row">
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-8">
           <label for="narration">Narration:</label>
           <textarea class="form-control" id="narration" name="narration" required><?php echo $claim->narration;?></textarea>
         </div>   
@@ -204,7 +196,7 @@
                 <th>Head</th>
                 <th>Remarks</th>
                 <th>Amount</th>
-                <th><button class="btn btn-success" type="button" id="addrow"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i></button></th>
+                <th><button class="btn btn-success" data-toggle="tooltip" data-original-title="Add Row" data-placement="bottom" type="button" id="addrow"><i class="fa fa-plus" aria-hidden="true"></i></button></th>
               </tr>
             </thead>
             <tbody id="intro">

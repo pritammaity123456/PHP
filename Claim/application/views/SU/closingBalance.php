@@ -38,7 +38,7 @@
       <h3 style="text-align: center;">SYNERGIC SOFTEK SOLUTIONS PVT. LTD.</h3>
       <h4 style="text-align: center;">55 D, DESAPRAN SASHMAL ROAD</h4>
       <h5 style="text-align: center;">KOLKATA-33</h5>
-      <h5 style="text-align: center;">Project wise expence for the period of <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
+      <h5 style="text-align: center;">Closing Balances for the period of <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
       
         <hr>
         <div class="card-body">

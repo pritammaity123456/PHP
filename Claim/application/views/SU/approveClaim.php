@@ -14,13 +14,19 @@
         else if ($aprvd == 2){
           echo '<div class="alert alert-danger">Thank You! Reject Successfully</div>'; 
         }
+        else if ($aprvd == 3){
+          echo '<div class="alert alert-danger">Sorry! Already Rejected </div>'; 
+        }
+        else if ($aprvd == 4){
+          echo '<div class="alert alert-danger">Sorry! Already Approved </div>'; 
+        }
       ?>
       <h3>Approve Claim</h3>
       <hr>
       
       <div class="card mb-3">
         <div class="card-header">
-            
+            <div class="load"></div>
         </div>
         <div class="card-body">
           <div class="table-responsive">
@@ -29,12 +35,9 @@
                 <tr>
                   <th>Claim Cd</th>
                   <th>Claim Date</th>
-                  <th>Project Type</th>
-                  <th>Project &nbsp;Name</th>
-                  <th>Purpose</th>
-                  <th>From Date</th>
-                  <th>To Date &nbsp;</th>
+                  <th>Emp Name</th>
                   <th>Narration &nbsp;</th>
+                  <th>Amount</th>
                   <th>Approval Status</th>
                   <th>Show Claim &nbsp;</th>
                   <!--<th>Delete</th>-->
@@ -44,48 +47,49 @@
                 <tr>
                   <th>Claim Cd</th>
                   <th>Claim Date</th>
-                  <th>Project Type</th>
-                  <th>Project Name</th>
-                  <th>Purpose</th>
-                  <th>From Date</th>
-                  <th>To Date</th>
+                  <th>Emp Name</th>
                   <th>Narration</th>
+                  <th>Amount</th>
                   <th>Approval Status</th>
                   <th>Show Claim</th>
                   <!--<th>Delete</th>-->
                 </tr>
               </tfoot>
               <tbody>
-              <?php if($alldata){
+              <?php
+              $grand_total = 0;
+              if($alldata){
                 foreach ($alldata as $aldta){
                   foreach ($aldta as $key) {
-                    
-                  if ($key->approval_status || $key->rejection_status || $key->emp_no == $this->session->userdata('is_login')->emp_no) {
-                      continue;
+                    foreach ($emp_dtls as $dtls){
+                      if($dtls->emp_no == $key->emp_no){
+                    ?>
+                    <tr>
+                      <td><?php echo $key->claim_cd;?></td>
+                      <td><?php echo date('d/m/Y',strtotime($key->claim_dt));?></td>
+                      <td><?php echo $dtls->emp_name;?></td>
+                      <td><?php echo $key->narration;?></td>
+                      <td><?php echo $key->amount;?></td>
+                      <td><?php echo $key->approval_status?'<span class="badge badge-success">Approved</span>':'<span class="badge badge-danger">Unapprove</span>';?></td>
+                      <td><button class="btn btn-primary edit-btn onClick" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Details" id="<?php echo $key->claim_cd;?>"><i class="fa fa-search fa-lg" aria-hidden="true"></i></button></td>
+                    </tr>
+                    <?php
+                        $grand_total +=  $key->amount;
+                      }
+                    }   
                   }
-                ?>
-                <tr>
-                  <td><?php echo $key->claim_cd;?></td>
-                  <td><?php echo date('d/m/Y',strtotime($key->claim_dt));?></td>               
-                  <td><?php echo $key->project_type;?></td>
-                  <td><?php echo $key->project_name;?></td>   
-                  <td><?php echo $key->purpose;?></td>
-                  <td><?php echo date('d/m/Y',strtotime($key->from_dt));?>  &nbsp;</td>
-                  <td><?php echo date('d/m/Y',strtotime($key->to_dt));?> &nbsp;</td>
-                  <td><?php echo $key->narration;?></td>
-                  <td><?php echo $key->approval_status?'<span class="badge badge-success">Approved</span>':'<span class="badge badge-danger">Unapprove</span>';?></td>
-                  <td><button class="btn btn-primary edit-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Details" id="<?php echo $key->claim_cd;?>"><i class="fa fa-search fa-lg" aria-hidden="true"></i></button></td>
-                </tr>
-                <?php
-                }
                 } 
               }
-                
+                else
+                {
+                  
+                }
                 ?>
               </tbody>
             </table>
           </div>
-      </div>
+        </div>
+        <strong style="font-size: 30px;">Grand Total: <?php echo $grand_total; ?></strong>
         <div class="card-footer small text-muted"></div>
       </div>
 
@@ -101,13 +105,15 @@
     <script type="text/javascript">
 
       $('.edit-btn').click(function(){
-
         var claim_cd = $(this).attr('id');
+        $('.onClick').hide();
+        $('.load').addClass('loading');
         $.get( "<?php echo base_url().'index.php/admin/edit_claim_ajax'?>", { id: claim_cd } )
           .done(function( data ) {
             $('#claim-update').html(data);
             $('#editModal').modal('show');
-
+            $('.load').removeClass('loading');
+            $('.onClick').show();
           });
       });
 

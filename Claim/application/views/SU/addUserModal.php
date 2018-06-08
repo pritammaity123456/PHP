@@ -1,6 +1,7 @@
 <script type="text/javascript">
   
   $(document).ready(function(){
+    $('#alrt').hide();
     var total = 0;
     
     $("#addrow").click(function(){
@@ -19,7 +20,7 @@
   });
 
 document.getElementById("myDIV").style.display = "none";
-$('#user_type').on('change', function() {
+$('#user_type').change(function() {
 
   $('.preferenceSelect').each(function(){
         $('.preferenceSelect').find('option[value ="' + this.value + '"]').toggle(false);
@@ -52,11 +53,25 @@ $('#user_type').on('change', function() {
 $('#intro').trigger('change');
 
 $('#intro').on("change", ".preferenceSelect", function() {
-    
+    if($('#manageno').val() != 0){
+        $('#alrt').hide('slow');
+        $('#save').prop('type', 'submit');
+    }
     $('.preferenceSelect').each(function(){
         $('.preferenceSelect').find('option[value ="' + this.value + '"]').toggle(false);
     
       });
+  });
+  
+  $('#save').click(function(){
+      var typeOfUser= $('#user_type').val();
+      
+      if(typeOfUser == 'M' || typeOfUser == 'A' || typeOfUser == 'AC'){
+          if($('#manageno').val() == 0){
+              $('#alrt').show();
+              $('#save').prop('type', 'button');
+          }
+      }
   });
 </script>
 <form method="post" id="form_login" action="<?php echo site_url("Admin/addUserProcess")?>">
@@ -64,8 +79,8 @@ $('#intro').on("change", ".preferenceSelect", function() {
       <div class="form-group col-md-8">
         <label for="emp_name">Employee's Name</label>
         <div class="col-xs-4">
-          <select class="form-control preferenceSelect" id="emp_no" name="emp_no" required style="width: 310px;">
-          <option>Select</option>
+          <select class="form-control preferenceSelect" id="emp_no" name="emp_no" required="required" style="width: 310px;">
+          <option value="0">Select</option>
           <?php
             if ($emp_dtls) {
                 foreach ($emp_dtls as $aldta) {
@@ -84,7 +99,7 @@ $('#intro').on("change", ".preferenceSelect", function() {
       <div class="form-group col-md-4">
         <label for="user_type">User Type</label>
         <div class="col-xs-4">
-              <select class="custom-select" id="user_type" name="user_type" style="width: 150px;" onchange="changeFunc();" required style="width: 150px;"> 
+              <select class="custom-select" id="user_type" name="user_type" style="width: 150px;" required="required" style="width: 150px;"> 
                 <option>Select</option>
                 <option value="A">Admin</option>
                 <option value="AC">Accountant</option>
@@ -118,7 +133,7 @@ $('#intro').on("change", ".preferenceSelect", function() {
       </div>     
       <div class="form-row" id="myDIV">
       --------------------------------------------------------------------------
-        
+     <br>
         Choose Employess for Manage:
       <div class="table table-responsive">
           <table class="table table-bordered">
@@ -130,8 +145,8 @@ $('#intro').on("change", ".preferenceSelect", function() {
             </thead>
             <tbody id="intro">
               <tr>
-                <td><select class="custom-select  preferenceSelect" style="width: 375px;" name="empno[]">
-                  <option>Select</option>
+                <td><select class="custom-select  preferenceSelect" id="manageno" style="width: 375px;" name="empno[]" required="required">
+                  <option value="0">Select</option>
                   <?php foreach ($emp_dtls as $aldta):
                   ?>
                     <option value="<?php echo $aldta->emp_no;?>"><?php echo $aldta->emp_name;?></option>
@@ -147,7 +162,10 @@ $('#intro').on("change", ".preferenceSelect", function() {
         </div>
       </div>        
       <div class="modal-footer">
-              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-              <button class="btn btn-primary" type="submit">Submit</button>
-            </div>
+        <div class="form-group col-md-6">
+          <div class="alert alert-danger" id="alrt">Please choose an employee for this manager</div>
+        </div>      
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" id="save" type="submit">Submit</button>
+      </div>
 </form>

@@ -3,4 +3,10 @@ RewriteBase /Claim/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond $1 !^(index\.php|js|img|css|captcha|robots\.txt)
-RewriteRule ^(.*)$ /Claim/index.php/$1 [L]
+RewriteRule ^(.*)$ /claim/index.php/$1 [L]
+RewriteCond %{HTTP_HOST} ^claim\.synergicportal\.in$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.claim\.synergicportal\.in$
+RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^/?$ "http\:\/\/synergicportal\.in\/claim" [R=301,L]
+

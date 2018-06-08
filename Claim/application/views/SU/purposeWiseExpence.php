@@ -38,23 +38,24 @@
       <h3 style="text-align: center;">SYNERGIC SOFTEK SOLUTIONS PVT. LTD.</h3>
       <h4 style="text-align: center;">55 D, DESAPRAN SASHMAL ROAD</h4>
       <h5 style="text-align: center;">KOLKATA-33</h5>
-      <h5 style="text-align: center;">Purpose wise expence for the period of <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
+      <h5 style="text-align: center;">Purpose wise expense for the period of <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
       
       <div>
         <hr>
         <?php 
+          if($prwExpence){
         	foreach ($row as $data) {
             echo "Emp No. : ".$data->emp_no."<br>";
             echo "Emp Name : ".$data->emp_name."<br>";
             $count = 0;
             foreach ($prwExpence as $key) {
                     if ($data->emp_no == $key->emp_no) {
-                        echo "<div style='margin-left:400px;'>";
+                        echo "<div style='margin-left:300px;'>";
                         ?>
-                        <table class="width" style="width: 25%;">
+                        <table class="width" style="width: 85%;">
                           <tr>
-                            <th class="width" width="1%"></th>
-                            <th class="width" width="1%"></th>
+                            <th class="width" width="75%"></th>
+                            <th class="width" width="25%"></th>
                           </tr>
                           <tr>
                             <td ><?php echo $key->purpose;?></td>
@@ -66,11 +67,11 @@
                         $count += $key->amount;
                     }
                 }?>
-                <div style='margin-left:425px;'>
-                  <table class="width" style="width: 35%;">
+                <div style='margin-left:325px;'>
+                  <table class="width" style="width: 85%;">
                   <tr>
-                    <td class="width" width="12%"><hr></td>
-                    <td class="width" width="12%"><hr></td>
+                    <td class="width" width="75%"><hr></td>
+                    <td class="width" width="25%"><hr></td>
                   </tr>
                   <tr>
                     <td style="text-align: right;" >Total</td>
@@ -81,6 +82,7 @@
                 
                 <?php
               echo"<hr>"; 
+          }
           }
         ?>
       </div>

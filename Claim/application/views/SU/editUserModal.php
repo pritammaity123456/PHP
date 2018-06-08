@@ -96,7 +96,7 @@ $('#intro').on("change", ".preferenceSelect", function() {
         <label for="pass">Password:</label>
           <div class="form-group col-xs-4">
             <select class="custom-select" id="pass" name="pass" selected style="width: 150px;">
-              <option>Existing</option>
+              <option value="noVal">Existing</option>
               <option value="nopass@123">Default Pass</option>
             </select>
           </div>

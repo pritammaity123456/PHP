@@ -3,11 +3,11 @@
 <body>
   <nav class="navbar navbar-inverse" style="background: #595959;">
   <div class="container-fluid">
-    <div class="col-md-2">
+    <div class="form-inline">
+      <div class="form-group col-md-2">
       <li>
       <a class="img-fluid align-items-center" href="">
-              <img class="img-responsive" src="http://www.synergicsoftek.in/wp-content/themes/Untitled/images/15b27e558a936f5a396a0ce89553abc5_ssslogonew.png" alt="Cooperative Banking Software">
-          </a>
+              <img class="img-responsive" src="<?php echo base_url('Slogo2.png');?>" alt="Cooperative Banking Software"></a>
     </li>
     </div>
     <div class="col-md-8">
@@ -17,9 +17,21 @@
       <h3 style="text-align: center; font-family:Monotype Corsiva; color:white;">KOLKATA-33</h3>
     </li>
     </div>
+    <div claiss="col-md-2">
+    </div>
+  </div>
   </div>
 </nav>
 
+  <div class="" style="margin-left: 150px; margin-right: 150px;">
+    <?php
+        if ($failure_msg == 1) {
+          echo '<div class="alert alert-danger alert-dismissible" style="text-align:center;"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><h3><strong>Sorry!</strong> Invalid User</h3></div>';
+        }elseif ($failure_msg == 2) {
+          echo '<div class="alert alert-danger alert-dismissible" style="text-align:center;"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><h3><strong>Sorry!</strong> Invalid Password</h3></div>';
+        }
+    ?>
+  </div>
 	 <div class="login">
 			<form method="post" action="<?php echo site_url("Users/index")?>">  
         <div class="group">
@@ -33,9 +45,10 @@
         <button type="submit" id="cryptstr" class="button buttonBlue"> <span class="glyphicon glyphicon-log-in"></span> Login <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div></button>
 			</form> 
 	 </div>
+	 <a href="http://synergicportal.in/">Home</a>
 </body>
 
-	 <script>
+<script>
   $("#form_login").validate({
     rules: {
       user_id: {

@@ -36,6 +36,9 @@
 					            <option value="Project Manager"<?php echo ($employee->designation
  									== 'Project Manager')?'selected':'';?>>Project Manager</option>
 
+ 								<option value="General Manager"<?php echo ($employee->designation
+ 									== 'General Manager')?'selected':'';?>>General Manager</option>	
+
 					            <option value="Purchase Manager"<?php echo ($employee->designation
  									== 'Purchase Manager')?'selected':'';?>>Purchase Manager</option>
 
@@ -55,7 +58,10 @@
  									== 'Software Trainee Engineer')?'selected':'';?>>Software Trainee Engineer</option>
 
 					            <option value="Team Leader"<?php echo ($employee->designation
- 									== 'Team Leader')?'selected':'';?>>Team Leader</option>  
+ 									== 'Team Leader')?'selected':'';?>>Team Leader</option>
+
+ 								<option value="Telecaller"<?php echo ($employee->designation
+ 									== 'Telecaller')?'selected':'';?>>Telecaller</option>  
               				</select>
 	          			</div>
 	            	</div>		

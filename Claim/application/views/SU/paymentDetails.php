@@ -1,7 +1,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#dataTable').DataTable( {
-       "order": [[ 0, "desc" ],[ 1, "desc" ]]
+       "order": [[ 0, "asc" ]]
     } );
     $('#dataTable_filter').hide();
     $('#dataTable_length').hide();

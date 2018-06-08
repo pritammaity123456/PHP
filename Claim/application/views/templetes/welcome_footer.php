@@ -151,6 +151,21 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="allpaymentDtl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Payment Details</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="allpayment-dtl">
+           
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="modal fade" id="paymentDtl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -275,6 +290,14 @@
           });
       });
 
+    $('.all_payment_dtls').click(function(){
+        $.get( "<?php echo base_url().'index.php/admin/all_payment_dtl_ajax'?>")
+          .done(function( data ) {
+            $('#allpayment-dtl').html(data);
+            $('#allpaymentDtl').modal('show');
+          });
+      });
+      
     $('.payment_dtls').click(function(){
         $.get( "<?php echo base_url().'index.php/admin/payment_dtl_ajax'?>")
           .done(function( data ) {
@@ -282,14 +305,14 @@
             $('#paymentDtl').modal('show');
           });
       });
-
+      
     $('.distWiseExp').click(function(){
         $.get( "<?php echo base_url().'index.php/admin/distWiseExp_ajax'?>")
           .done(function( data ) {
             $('#distWise-Exp').html(data);
             $('#dwiseExp').modal('show');
           });
-      });
+      });      
   </script>
     <script src="<?php echo base_url('js/sb-admin.min.js')?>"></script>
     <script src="<?php echo base_url('js/sb-admin-datatables.min.js')?>"></script>
@@ -306,6 +329,32 @@
           if(data==0) 
             window.location.href = "<?php echo site_url("Users/logout")?>";
           });
-      },15*60*1000);
+      },20*60*1000);
   });
 </script>
+
+<script type="text/javascript">
+  /*$(document).ready(function() {
+    $('.onClick').click(function(){
+      $('.onClick').hide();
+      $('.load').addClass('loading');
+        setTimeout(function () { 
+        $('.load').removeClass('loading');
+        $('.onClick').show();
+
+      }, 2000);
+    });
+});*/
+</script>
+
+<style type="text/css">
+  .loading{
+  background-image : url('http://www.fotos-lienzo.es/media/aw_searchautocomplete/default/loading.gif');  
+  background-repeat:no-repeat;
+}
+.loading:after {
+    content: "Loading...";
+    text-align : right;
+    padding-left : 25px;
+}
+</style>

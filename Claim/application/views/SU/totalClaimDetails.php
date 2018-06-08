@@ -38,7 +38,7 @@
       <h3 style="text-align: center;">SYNERGIC SOFTEK SOLUTIONS PVT. LTD.</h3>
       <h4 style="text-align: center;">55 D, DESAPRAN SASHMAL ROAD</h4>
       <h5 style="text-align: center;">KOLKATA-33</h5>
-      <h5 style="text-align: center;">Project wise expence for the period of <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
+      <h5 style="text-align: center;">Total claim details for the period of <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
       
         <hr>
         <div class="card-body">
@@ -47,25 +47,35 @@
               <thead>
                 <tr>
                   <th>Emp Number</th>
-                  <th>Total Claim</th>
+                  <th>Emp Name</th>
+                  <th style="text-align: right;">Total Claim</th>
                 </tr>
               </thead>
               <tbody>
-              <?php if($alldata){
+              <?php
+              $grand_total = 0.00;
+              if($alldata){
                foreach ($alldata as $aldta):
+                   foreach ($emp_dtls as $dtls){
+                     if($dtls->emp_no == $aldta->emp_no){
                 ?>
                 <tr>
                   <td class="center"><?php echo $aldta->emp_no;?></td>
-                  <td class="center"><?php echo $aldta->total_amount;?></td>
+                  <td class="center"><?php echo $dtls->emp_name;?></td>
+                  <td style="text-align: right;"><?php echo $aldta->total_amount;?></td>
                 </tr>
                 <?php
+                        $grand_total += $aldta->total_amount;
+                     }
+                   }
                 endforeach;
                 } 
               ?>
               </tbody>
             </table>
           </div>
-      </div>
+          <strong>Grand Total: <?php echo $grand_total; ?></strong>
+        </div>
     </div>
       <div class="card-footer">
         <button class="btn print-btn tValHide" type="button" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Print" style="width: 95px;" id="" onclick="printClaimDtls();"><i class="fa fa-print fa-lg" aria-hidden="true"></i></button>

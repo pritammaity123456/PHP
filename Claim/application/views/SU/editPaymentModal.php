@@ -33,9 +33,9 @@
     </div>
     <div class="form-row">
       <div class="form-group col-md-6">
-        <label for="pay_mode">Payment Mode:</label>
+        <label for="edit_pay_mode">Payment Mode:</label>
           <div class="col-xs-6">
-              <select class="custom-select" id="pay_mode" name="pay_mode" style="width:250px;" required>
+              <select class="custom-select" id="edit_pay_mode" name="pay_mode" style="width:250px;" required>
                 <option value="CASH"<?php echo ($payment->payment_mode == 'CASH')?'selected':'';?>>CASH</option>
                 <option value="CHEQUE"<?php echo ($payment->payment_mode == 'CHEQUE')?'selected':'';?>>CHEQUE</option>
                 <option value="Net Banking"<?php echo ($payment->payment_mode == 'Net Banking')?'selected':'';?>>Net Banking</option>
@@ -52,7 +52,7 @@
           </div>
       </div>
     </div>
-    <div class="form-row">
+    <div class="form-row hItems">
       <div class="form-group col-md-6">
         <label for="dp1">Cheque Date:</label>
             <input type="text" class="form-control" id="dp1" name="date1" value="<?php if($payment->chq_dt > '2002-01-01'){ echo date('d/m/Y',strtotime($payment->chq_dt));}else{echo "";}?>">
@@ -63,10 +63,11 @@
         </div>
     </div>
     <div class="form-row">
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-6 hItems">
         <label for="bank">Bank Name:</label>
         <div class="form-group col-xs-6">
             <select class="custom-select" id="bank" name="bank" style="width:250px;" required>
+              <option>Select</option>
               <option value="AXIS"<?php echo ($payment->bank == 'AXIS')?'selected':'';?>>AXIS</option>
               <option value="HDFC"<?php echo ($payment->bank == 'HDFC')?'selected':'';?>>HDFC</option>
             </select>
@@ -85,11 +86,27 @@
 
 <script src="<?php echo base_url('js/jquery.maskedinput.js'); ?>" type="text/javascript"></script>
 <script>
-  $(".livesearch").select2();
   $(document).ready(function($){
+    if ($('#edit_pay_mode').val() == 'CHEQUE') {
+       $('.hItems').show();
+    }
+    else{
+      $('.hItems').hide();
+    }
+    
       $("#dp1").mask("99/99/9999");
 });
   $(document).ready(function($){
       $("#dp1").css({"placeholder":"opacity:0.4"});
 });
+
+  $('#edit_pay_mode').change(function(){
+    var value = $(this).val();
+    if ((value != 'CASH') && (value != 'Net Banking')) {
+      $('.hItems').show();
+    }
+    else{
+      $('.hItems').hide();
+    }
+  });
 </script>

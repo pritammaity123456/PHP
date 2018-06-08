@@ -5,6 +5,8 @@
           echo '<div class="alert alert-success">Thank You! Successfully Added</div>';
         }elseif ($pay == 2) {
           echo '<div class="alert alert-success">Thank You! Successfully Updated</div>';
+        }elseif ($pay == 3) {
+          echo '<div class="alert alert-success">Thank You! Successfully Deleted</div>';
         }
       ?>
       <h3>Payment Details</h3>
@@ -60,8 +62,10 @@
                   <td><?php echo $aldta->chq_dt;?></td>
                   <td><?php echo $aldta->chq_no;?></td>
                   <td><?php echo $aldta->approval_status?'<span class="badge badge-success">Approved</span>':'<span class="badge badge-danger">Unapprove</span>';?></td>
-                  <td><button class="btn btn-primary edit-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Details" id="<?php echo $aldta->trans_cd;?>">
-                          <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                  <td><button class="btn btn-primary edit-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit" id="<?php echo $aldta->trans_cd;?>">
+                          <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+                    </button>&nbsp;<button class="btn btn-danger del-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Delete" id="<?php echo $aldta->trans_cd;?>">
+                        <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
                     </button></td>
             <!--<td><a class="btn btn-danger" href="path/to/settings" aria-label="Delete">
             <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -96,6 +100,21 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Delete Payment</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="payment-del">
+           
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -121,6 +140,17 @@
           .done(function( data ) {
             $('#payment-update').html(data);
             $('#editModal').modal('show');
+          });
+      });
+
+      $('.del-btn').click(function(){
+        var id = $(this).attr('id');
+        console.log('clicked');
+        //$('#delModal').modal('show');
+        $.get( "<?php echo base_url().'index.php/admin/del_payment_ajax'?>", { id: id } )
+          .done(function( data ) {
+            $('#payment-del').html(data);
+            $('#delModal').modal('show');
           });
       });
 

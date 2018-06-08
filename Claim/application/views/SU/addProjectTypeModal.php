@@ -3,7 +3,7 @@
     <div class="form-row">     
       <div class="form-group col-md-6">
         <label for="type_cd">Type Cd</label>
-        <input type="text" class="form-control" id="type_cd" name="type_cd" placeholder="Cd." required>
+        <input type="text" class="form-control" id="type_cd" name="type_cd" value="<?php echo $maxCode->type_cd + 1;?>" readonly>
       </div>
       <div class="form-group col-md-6">
         <label for="type_desc">Type Description</label>

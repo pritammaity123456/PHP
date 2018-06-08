@@ -16,6 +16,7 @@
     <script src="<?php echo base_url('assets/vendor/jquery-easing/jquery.easing.min.js')?>"></script>
     <script src="<?php echo base_url('assets/vendor/datatables/jquery.dataTables.js')?>"></script>
     <script src="<?php echo base_url('assets/vendor/datatables/dataTables.bootstrap4.js')?>"></script>
+    <script src="<?php echo base_url('js/bootstrap-datepicker.js')?>"></script>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="<?php echo base_url('assets/vendor/bootstrap/css/bootstrap.min.css')?>">
     
@@ -25,7 +26,7 @@
     <link rel="stylesheet" href="<?php echo base_url('assets/vendor/datatables/dataTables.bootstrap4.css')?>">
     <link  rel="stylesheet" href="<?php echo base_url('assets/vendor/datatables/dataTables.bootstrap4.css')?>">
 
-    
+    <link rel="stylesheet" href="<?php echo base_url('css/bootstrap-datepicker.css')?>">
     
     <link rel="stylesheet" href="http://silviomoreto.github.io/bootstrap-select">
     <link rel="stylesheet" href="<?php echo base_url('css/sb-admin.css')?>">
@@ -46,6 +47,61 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    <?php if($this->session->userdata('loggedin')->user_type == 'AU'){?>
+     <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion"> 
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Reports">
+          <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseClaimPages" data-parent="#exampleAccordion">
+            <i class="fa fa-fw fa-area-chart"></i>
+            <span class="nav-link-text">Admin Reports</span>
+          </a>
+          <ul class="sidenav-second-level collapse" id="collapseClaimPages">
+              <li class="pwe">
+              <a  class="nav-link" data-toggle="modal" data-target="#pweDtl">Project wise Expense</a>
+            </li>
+            <li class="prwe">
+              <a  class="nav-link" data-toggle="modal" data-target="#prweDtl">Purpose wise Expense</a>
+            </li>
+            <li class="claim_adminDtl">
+              <a class="nav-link" data-toggle="modal" data-target="#claimAdminDtl">Employee Wise<br>Claim Details</a>
+            </li>
+            <!--<li class="cl_balance">
+              <a class="nav-link" data-toggle="modal" data-target="#alclbalns">All Closing Balances</a>
+            </li>-->
+            
+            <li class="emp_cl_balance">
+              <a class="nav-link" data-toggle="modal" data-target="#empClBalns">Employee Balances</a>
+            </li>
+            <li class="totalClaimDtl">
+              <a class="nav-link" data-toggle="modal" data-target="#totalClaimDtl">Total Claim Details</a>
+            </li>
+            <li class="distWiseExp">
+              <a class="nav-link" data-toggle="modal" data-target="#dwiseExp">District Wise Expence</a>
+            </li>
+            <li class="all_payment_dtls">
+              <a class="nav-link" data-toggle="modal" data-target="#allpaymentDtl">Payment Details</a>
+            </li>
+            <li class="payment_dtls">
+              <a class="nav-link" data-toggle="modal" data-target="#paymentDtl">Employee wise Payment Detail</a>
+            </li>
+            <li class="all_payment_dtls">
+              <a class="nav-link" data-toggle="modal" data-target="#allpaymentDtl">Payment Details</a>
+            </li>
+          </ul>
+        </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="modal" data-target="#logoutModal">
+            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+        </li>
+      </ul>
+      </div>        
+        <?php
+        }
+        else{
+        ?>
+        
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
@@ -105,7 +161,42 @@
                 </li>
 
              <?php 
+             }
+              if ($this->session->userdata('loggedin')->user_type == 'M') {?>
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Master Components">
+                  <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
+                    <i class="fa fa-fw fa-wrench"></i>
+                    <span class="nav-link-text">User Master</span>
+                  </a>
+                  <ul class="sidenav-second-level collapse" id="collapseComponents">
+                    
+                    <li>
+                      <a href="<?php echo site_url('Admin/addProjects');?>">Project Names</a>
+                    </li>
+                  </ul>
+                </li>
+
+             <?php 
            }
+            if ($this->session->userdata('loggedin')->user_type == 'AC') {?>
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Master Components">
+                  <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
+                    <i class="fa fa-fw fa-wrench"></i>
+                    <span class="nav-link-text">User Master</span>
+                  </a>
+                  <ul class="sidenav-second-level collapse" id="collapseComponents">
+                    <li>
+                      <a href="<?php echo site_url('Admin/addPurpose');?>">Purpose</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo site_url('Admin/addClaimHead');?>">Add Claim Head</a>
+                    </li>
+                  </ul>
+                </li>
+        <?php  
+        }              
         if ($this->session->userdata('loggedin')->user_type == 'AC') {
               ?>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Payment Pages">
@@ -146,29 +237,48 @@
                   <a class="nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMulti2"><strong>Admin Reports</strong></a>
                   <ul class="sidenav-third-level collapse" id="collapseMulti2">
                     <li class="pwe">
-                      <a  class="nav-link" data-toggle="modal" data-target="#pweDtl">Project wise Expence</a>
+                      <a  class="nav-link" data-toggle="modal" data-target="#pweDtl">Project wise Expense</a>
                     </li>
                     <li class="prwe">
-                      <a  class="nav-link" data-toggle="modal" data-target="#prweDtl">Purpose wise Expence</a>
+                      <a  class="nav-link" data-toggle="modal" data-target="#prweDtl">Purpose wise Expense</a>
                     </li>
                     <li class="claim_adminDtl">
-                      <a class="nav-link" data-toggle="modal" data-target="#claimAdminDtl">All Claim Details</a>
+                      <a class="nav-link" data-toggle="modal" data-target="#claimAdminDtl">Employee Wise<br>Claim Details</a>
                     </li>
-                    <li class="cl_balance">
+                    <!--<li class="cl_balance">
                       <a class="nav-link" data-toggle="modal" data-target="#alclbalns">All Closing Balances</a>
-                    </li>
+                    </li>-->
+                    <?php if ($this->session->userdata('loggedin')->user_type == 'A') {?>
                     <li class="emp_cl_balance">
                       <a class="nav-link" data-toggle="modal" data-target="#empClBalns">Employee Balances</a>
                     </li>
+                    <?php
+                    }
+                    ?>
                     <li class="totalClaimDtl">
                       <a class="nav-link" data-toggle="modal" data-target="#totalClaimDtl">Total Claim Details</a>
                     </li>
                     <li class="distWiseExp">
                       <a class="nav-link" data-toggle="modal" data-target="#dwiseExp">District Wise Expence</a>
                     </li>
-                    <?php if ($this->session->userdata('loggedin')->user_type == 'AC') {?>
-                      <li class="payment_dtls">
-                      <a class="nav-link" data-toggle="modal" data-target="#paymentDtl">Payment Detail</a>
+                    <?php if ($this->session->userdata('loggedin')->user_type == 'A') {?>
+                    <li class="all_payment_dtls">
+                      <a class="nav-link" data-toggle="modal" data-target="#allpaymentDtl">Payment Details</a>
+                    </li>
+                    <li class="payment_dtls">
+                      <a class="nav-link" data-toggle="modal" data-target="#paymentDtl">Employee wise Payment Detail</a>
+                    </li>
+                    <?php
+                    }
+                    if ($this->session->userdata('loggedin')->user_type == 'AC') {?>
+                    <li class="emp_cl_balance">
+                      <a class="nav-link" data-toggle="modal" data-target="#empClBalns">Employee Balances</a>
+                    </li>
+                    <li class="all_payment_dtls">
+                      <a class="nav-link" data-toggle="modal" data-target="#allpaymentDtl">Payment Details</a>
+                    </li>
+                    <li class="payment_dtls">
+                      <a class="nav-link" data-toggle="modal" data-target="#paymentDtl">Employee wise Payment Detail</a>
                     </li>
                     <?php
                     }
@@ -262,5 +372,8 @@
         </li>
       </ul>
     </div>
+    <?php
+    }
+    ?>
   </nav>
   

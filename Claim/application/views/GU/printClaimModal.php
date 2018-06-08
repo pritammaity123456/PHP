@@ -40,31 +40,31 @@
     <th class="noborder" width="25%"></th>
   </tr>
   <tr>
-     <td>Claim No</td>
+     <td>Approve Date</td>
      <td class="left_algn">:</td>
-     <td class="left_algn"><?php echo $claim->claim_cd;?></td>
+     <td class="left_algn"></td>
      <td></td>
      <td>Claim Date</td>
      <td class="left_algn">:</td>
      <td><?php echo (date('d/m/Y',strtotime($claim->claim_dt)));?></td>
    </tr>
-   <tr>
-     <td>Project Name</td>
+  <tr>
+     <td>Claim No</td>
      <td class="left_algn">:</td>
-     <td class="left_algn"><?php echo $claim->project_name;?></td>
+     <td class="left_algn"><?php echo $claim->claim_cd;?></td>
      <td></td>
      <td>Purpose</td>
      <td class="left_algn">:</td>
      <td><?php echo $claim->purpose;?></td>
    </tr>
    <tr>
+     <td>Project Name</td>
+     <td class="left_algn">:</td>
+     <td class="left_algn"><?php echo $claim->project_name;?></td>
+     <td></td>
      <td>Project Type</td>
      <td class="left_algn">:</td>
      <td class="left_algn"><?php echo $claim->project_type;?></td>
-     <td class="right_algn"></td>
-     <td class="center"></td>
-     <td class="left_algn"></td>
-     <td></td>
    </tr>
    <tr>
      <td>Pay To</td>

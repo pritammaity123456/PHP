@@ -47,7 +47,7 @@
           </div>
       </div>
     </div>
-    <div class="form-row">
+    <div class="form-row hItems">
       <div class="form-group col-md-6">
         <label for="dp1">Cheque Date:</label>
             <input type="text" class="form-control" id="dp1" name="date1" placeholder="DD/MM/YYYY" >
@@ -58,7 +58,7 @@
         </div>
     </div>
     <div class="form-row">
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-6 hItems">
         <label for="bank">Bank Name:</label>
         <div class="form-group col-xs-6">
             <select class="custom-select" id="bank" name="bank" style="width:250px;" required>
@@ -72,19 +72,51 @@
             <input type="text" class="form-control" id="amount" name="amount" required>
           </div>
     </div>
-      <div class="modal-footer">
-              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-              <button class="btn btn-primary" type="submit">Submit</button>
-            </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="bank">Total Receivable:</label>
+          <input type="text" class="form-control" id="rcvd_amt" readonly>
+        </div>
+      <div class="form-group col-md-6">
+        <label for="amount">Shadow Balance</label>
+            <input type="text" class="form-control" id="shadow_bal" readonly>
+      </div>
+    </div>
+     <div class="modal-footer">
+      <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
 </form>
 
 <script src="<?php echo base_url('js/jquery.maskedinput.js'); ?>" type="text/javascript"></script>
 <script>
-  $(".livesearch").select2();
   $(document).ready(function($){
+      $('.hItems').hide();
       $("#dp1").mask("99/99/9999");
 });
   $(document).ready(function($){
       $("#dp1").css({"placeholder":"opacity:0.4"});
 });
+
+  $('#pay_mode').change(function(){
+    var value = $(this).val();
+    if ((value != 'CASH') && (value != 'Net Banking')) {
+      $('.hItems').show();
+    }
+    else{
+      $('.hItems').hide();
+    }
+  });
+  
+  $('#emp_no').change(function(){
+    var emp_no = $(this).val();
+    $.get('<?php echo site_url('Admin/closing_bal'); ?>', {emp_no : emp_no})
+      .done(function(data){
+        $('#rcvd_amt').val(data);
+      });
+  });
+
+  $('#amount').change(function(){
+    $('#shadow_bal').val($('#rcvd_amt').val() - $('#amount').val());
+  });
 </script>

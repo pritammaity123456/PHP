@@ -50,7 +50,6 @@
 			                	<th>Claim Date</th>
 			                  	<th>Approve Date</th>
 			                  	<th>Amount</th>
-			                  	<th>Project Type</th>
 			                  	<th>Project Name</th>
 			                  	<th>Purpose</th>
 	                  			<th class="tValHide"></th>
@@ -64,9 +63,8 @@
 			                <tr>
 			                  	<td class="center"><?php echo $aldta->claim_cd;?></td>
 			                  	<td class="center"><?php echo date('d/m/Y',strtotime($aldta->claim_dt));?></td>
-			                  	<td class="center"><?php echo date('d/m/Y',strtotime($aldta->approval_dt));?></td>
+			                  	<td class="center"><?php if($aldta->approval_dt > '2002-01-01'){ echo date('d/m/Y',strtotime($aldta->approval_dt));}else{echo "";}?></td>
 			                  	<td style="text-align:right;"><?php echo $aldta->amount;?></td>
-			                  	<td class="center"><?php echo $aldta->project_type;?></td>
 			                  	<td class="center"><?php echo $aldta->project_name;?></td>   
 			                  	<td class="center"><?php echo $aldta->purpose;?></td>
 			                  	<td  class="tValHide"><button class="btn btn-primary show-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Details" id="<?php echo $aldta->claim_cd;?>"><i class="fa fa-search fa-lg" aria-hidden="true"></i></button></td>
@@ -94,8 +92,16 @@
 		    		
     <div class="modal fade" id="clIndDtl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" id="dtl-show">
-          
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Claim Details: <?php echo $this->session->userdata('loggedin')->emp_name;?></h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="dtl-show">
+           
+          </div>
         </div>
       </div>
     </div>
@@ -104,12 +110,20 @@
 
       $('.show-btn').click(function(){
         var claim_cd = $(this).attr('id');
-        $.get( "<?php echo base_url().'index.php/users/ind_claim_dtl_ajax'?>", { id: claim_cd } )
+        
+        $.get( "<?php echo base_url().'index.php/Users/ind_claim_dtl_ajax'?>", { id: claim_cd } )
           .done(function( data ) {
             $('#dtl-show').html(data);
             $('#clIndDtl').modal('show');
           });
       });
-    </script>
 
-    
+      /*$('.show-btn').click(function(){
+        var id = $(this).attr('id');
+        $.get( "<?php echo base_url().'index.php/users/ind_claim_dtl_ajax'?>", { id: id } )
+          .done(function( data ) {
+            $('#dtl-show').html(data);
+            $('#clIndDtl').modal('show');
+          });
+      });*/
+    </script>

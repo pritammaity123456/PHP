@@ -3,7 +3,7 @@
     <div class="form-row">     
       <div class="form-group col-md-6">
         <label for="project_cd">Project Cd</label>
-        <input type="text" class="form-control" id="project_cd" name="project_cd" placeholder="Cd." required>
+        <input type="text" class="form-control" id="project_cd" name="project_cd" value="<?php echo $maxCode->project_cd + 1;?>" readonly>
       </div>
       <div class="form-group col-md-6">
         <label for="project_name">Project Name</label>

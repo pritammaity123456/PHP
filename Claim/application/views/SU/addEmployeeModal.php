@@ -15,7 +15,18 @@
   $(document).ready(function($){
       $("#dp2").css({"placeholder":"opacity:0.4"});
 });
+
+$(document).ready(function($){    
+    $('#dp1').datepicker({
+        format: 'dd/mm/yyyy',
+        endDate: "today"
+      });
+    });
 </script>
+
+<style>
+.datepicker{z-index:1151 !important;}
+</style>
 
 
 
@@ -43,13 +54,15 @@
                 <option value="Marketing Executive">Marketing Executive</option>
                 <option value="Office Staff">Office Staff</option>
                 <option value="Project Manager">Project Manager</option>
+                <option value="General Manager">General Manager</option>
                 <option value="Purchase Manager">Purchase Manager</option>
                 <option value="Senior Software Engineer">Senior Software Engineer</option>
                 <option value="Senior Accountant">Senior Accountant</option>
                 <option value="Service Engineer">Service Engineer</option>
                 <option value="Software Engineer">Software Engineer</option>
                 <option value="Software Trainee Engineer">Software Trainee Engineer</option>
-                <option value="Team Leader">Team Leader</option>  
+                <option value="Team Leader">Team Leader</option>
+                <option value="Telecaller">Telecaller</option>  
               </select>
           </div>
       </div>

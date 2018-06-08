@@ -2,18 +2,20 @@
     <div class="container-fluid">
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
+        <div style="width: 100%; text-align: center; margine-right:50px; margine-left:10px;">
         <li class="bg-info text-white">
-          <a class="img-fluid align-items-center" href="">
-              <img class="img-responsive" src="http://www.synergicsoftek.in/wp-content/themes/Untitled/images/15b27e558a936f5a396a0ce89553abc5_ssslogonew.png" alt="Cooperative Banking Software">
+        <a class="img-fluid align-items-center col-6" href="">
+              <img class="img-responsive" src="<?php echo base_url('Slogo2.png');?>" alt="Synergic Claim Software" height="150" width="350">
           </a>
           <div class="col-12">
-            <h1 class="lead">Synergic Softek Solutions Pvt. Ltd.</h1>
-            <p class="align-items-center lead">55 D, Desapran Sasmal Road, Kolkata, West Bengal 700033 <br>
-            An ISO 9001:2008 certified company.
+            <h1 class="lead" style="Monotype Corsiva">Synergic Softek Solutions Pvt. Ltd.</h1>
+            <p class="align-items-center lead">55 D, Desapran Sasmal Road, Kolkata, West Bengal 700033
           </p>
+          <br>
           </div>
           
         </li>
+        </div>
       </ol>
       <hr>
       <div>

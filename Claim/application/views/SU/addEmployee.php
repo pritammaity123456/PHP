@@ -56,7 +56,12 @@
                   <td><?php echo $aldta->emp_name;?></td>
                   <td><?php echo $aldta->designation;?></td>
                   <td><?php echo $aldta->sector;?></td>
-                  <td><?php echo date('d/m/Y',strtotime($aldta->date_of_joining));?></td>
+                  <td><?php if($aldta->date_of_joining > '2002-01-01'){
+                        echo date('d/m/Y',strtotime($aldta->date_of_joining));
+                      }else{
+                        echo "";
+                      }
+                  ?></td>
                   <td><?php echo $aldta->status_flag?'<span class="badge badge-success">Active</span>':'<span class="badge badge-danger">Inactive</span>';?></td>
                   <td><?php 
                       if($aldta->date_of_termination > '2002-01-01'){

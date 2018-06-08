@@ -38,7 +38,7 @@
     		<h3 style="text-align: center;">SYNERGIC SOFTEK SOLUTIONS PVT. LTD.</h3>
     		<h4 style="text-align: center;">55 D, DESAPRAN SASHMAL ROAD</h4>
     		<h5 style="text-align: center;">KOLKATA-33</h5>
-    		<h5 style="text-align: center;">Claim details for the period of <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
+    		<h5 style="text-align: center;">Personal Ledger between <?php echo date('d/m/Y', strtotime($date->from_date)).' to '.date('d/m/Y', strtotime($date->to_date));?></h5>
     		<hr>
     		<?php
         if ($alldata && $opening_balance && $emp_dtls && $date) {
@@ -61,34 +61,31 @@
 		           	<table class="table table-bordered width" cellpadding="4">
 	              		<thead>
 	                		<tr>
-			                	  <th>Date</th>
-			                	  <th>Claimed Amount</th>
-			                  	<th>Received Amount</th>
-			                  	<th>Closing Balance</th>
+			                	<th>Date</th>
+			                	<th style="text-align:right;">Claimed Amount</th>
+			                  	<th style="text-align:right;">Received Amount</th>
+			                  	<th style="text-align:right;">Closing Balance</th>
 	                		</tr>
 	              		</thead>
 	              		<tbody>
-	              			<?php if($alldata){
-	              				$total_cl_amt = 0.00;
-                        $total_rcv_amt = 0.00;
-			                	foreach ($alldata as $aldta):
-			                ?>
+	              		<?php
+	              			$total_cl_amt = 0.00;
+                            $total_rcv_amt = 0.00;
+	              			if($alldata){
+			                  foreach ($alldata as $aldta):
+			            ?>
 			                <tr>
 			                  	<td class="center"><?php echo date('d/m/Y',strtotime($aldta->balance_dt));?></td>
-                          <td style="text-align:right;"><?php echo $aldta->claim_amt;?></td>
+                                <td style="text-align:right;"><?php echo $aldta->claim_amt;?></td>
 			                  	<td style="text-align:right;"><?php echo $aldta->rcvd_amt;?></td>
-			                  	<td class="center"><?php echo  + $aldta->balance_amt;?></td>
+			                  	<td style="text-align:right;"><?php echo $aldta->balance_amt;?></td>
 			                </tr>
-			                <?php
+			            <?php
 			                	$total_cl_amt += $aldta->claim_amt;
-                        $total_rcv_amt += $aldta->rcvd_amt;
+                                $total_rcv_amt += $aldta->rcvd_amt;
 			                	endforeach;
 			                } 
-                      else{
-                        $total_cl_amt = 0.00;
-                        $total_rcv_amt = 0.00;
-                      }
-			                ?>
+			            ?>
                       <tr id="hie">
                           <td><hr></td>
                           <td><hr></td>
@@ -107,9 +104,9 @@
               }
                 ?>
 	          	</div>
-	      			<div class="card-footer">
-        				<button class="btn print-btn tValHide" type="button" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Print" style="width: 95px;" id="" onclick="printClaimDtls();"><i class="fa fa-print fa-lg" aria-hidden="true"></i></button>
-        			</div>
+      			<div class="card-footer">
+    				<button class="btn print-btn tValHide" type="button" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Print" style="width: 95px;" id="" onclick="printClaimDtls();"><i class="fa fa-print fa-lg" aria-hidden="true"></i></button>
+    			</div>
     		</div>
     	</div>
 	</div>

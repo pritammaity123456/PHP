@@ -7,8 +7,8 @@ class Admin extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
-		$this->load->model('adminProcess');
-		$this->load->model('process');
+		$this->load->model('AdminProcess');
+		$this->load->model('Process');
 		$_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	}
 
@@ -22,20 +22,20 @@ class Admin extends CI_Controller {
 			$user_id = $_POST['user_id'];
 			$password = $_POST['password'];
 			
-			$result = $this->adminProcess->login_process($user_id);
+			$result = $this->AdminProcess->login_Process($user_id);
 			$temp = password_verify($password,$result->password);
 			
 			if($temp){
 				$_SESSION['LAST_ACTIVITY'] = time();
-				$user_data = $this->adminProcess->get_value($user_id);
+				$user_data = $this->AdminProcess->get_value($user_id);
 //	Set Session Value for tm_audit_trail
 				$this->session->set_userdata('is_login',$user_data);
-				$this->adminProcess->f_audit_trail_login($user_id);
+				$this->AdminProcess->f_audit_trail_login($user_id);
 
-				$sl_no = $this->adminProcess->f_audit_trail_value($user_id);
+				$sl_no = $this->AdminProcess->f_audit_trail_value($user_id);
 				
 				$this->session->set_userdata('tm_audit_sl_no',$sl_no);
-				$this->adminProcess->changeAdmintatus('Y');
+				$this->AdminProcess->changeAdmintatus('Y');
 				redirect('Admin/welcome');
 				//$this->welcome();
 			}
@@ -70,10 +70,10 @@ class Admin extends CI_Controller {
     			$title['title'] = 'Claim-Welcome';
     		$t_name ='mm_employee';
     		$emp_no = $this->session->userdata('is_login')->emp_no;
-    		$result['alldata'] = $this->adminProcess->getDetailsbyEmpNo($t_name,$emp_no);
-    		$result['closing_bal'] = $this->adminProcess->closing_balance();
-    		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    		$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
+    		$result['alldata'] = $this->AdminProcess->getDetailsbyEmpNo($t_name,$emp_no);
+    		$result['closing_bal'] = $this->AdminProcess->closing_balance();
+    		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    		$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
     		//var_dump($result['total_claim']);die();
 	    	$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('welcome',$result);
@@ -93,11 +93,11 @@ class Admin extends CI_Controller {
 		$title['title'] = 'Claim-Settings';
 		$t_name ='mm_employee';
 		$t_name1 ='m_user_master';
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
 		$name = $this->input->get('name1');
 		if ($name) {
-			$msgName = $this->adminProcess->editNameProcess($name);
+			$msgName = $this->AdminProcess->editNameProcess($name);
 		}
 		else{
 			$msgName = false;
@@ -106,8 +106,8 @@ class Admin extends CI_Controller {
 			
 			$result['msgName'] = 1;
 			$result['msgPass'] = " ";
-    		$result['emp_dtls'] = $this->adminProcess->getDetailsbyEmpNo($t_name,$this->session->userdata('is_login')->emp_no);
-    		$result['user_dtls'] = $this->adminProcess->getDetailsbyEmpNo($t_name1,$this->session->userdata('is_login')->emp_no);
+    		$result['emp_dtls'] = $this->AdminProcess->getDetailsbyEmpNo($t_name,$this->session->userdata('is_login')->emp_no);
+    		$result['user_dtls'] = $this->AdminProcess->getDetailsbyEmpNo($t_name1,$this->session->userdata('is_login')->emp_no);
 	    	$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('settings',$result);
 			$this->load->view('templetes/welcome_footer');
@@ -115,8 +115,8 @@ class Admin extends CI_Controller {
 		else{
 			$result['msgPass'] = " ";
 			$result['msgName'] = 2;
-			$result['emp_dtls'] = $this->adminProcess->getDetailsbyEmpNo($t_name,$this->session->userdata('is_login')->emp_no);
-    		$result['user_dtls'] = $this->adminProcess->getDetailsbyEmpNo($t_name1,$this->session->userdata('is_login')->emp_no);
+			$result['emp_dtls'] = $this->AdminProcess->getDetailsbyEmpNo($t_name,$this->session->userdata('is_login')->emp_no);
+    		$result['user_dtls'] = $this->AdminProcess->getDetailsbyEmpNo($t_name1,$this->session->userdata('is_login')->emp_no);
 	    	$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('settings',$result);
 			$this->load->view('templetes/welcome_footer');
@@ -131,8 +131,9 @@ class Admin extends CI_Controller {
     		$title['title'] = 'Claim-Approve';
     		$t_name ='tm_claim';
     		$in = $this->uri->segment(3);
-    		$result['alldata'] = $this->adminProcess->getAllClaim();
-
+    		$result['alldata'] = $this->AdminProcess->getAllClaim();
+            $result['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
+            
     		if($result){
     			if(is_numeric($in)){
     				$result['aprvd'] = $in;
@@ -140,18 +141,18 @@ class Admin extends CI_Controller {
     			else{
     				$result['aprvd'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/approveClaim',$result);
 				$this->load->view('templetes/welcome_footer');
     		}
     		else{
     			$result['aprvd'] = ' ';
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/approveClaim');
 				$this->load->view('templetes/welcome_footer');
@@ -165,7 +166,7 @@ class Admin extends CI_Controller {
 
 
 	public function editApproveClaimProcess(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+	  if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
 	
 		$claimCode = $this->input->post('claimCode');
 		$approval_status = $this->input->post('approval_status');
@@ -173,22 +174,37 @@ class Admin extends CI_Controller {
 		$rejection_remarks = $this->input->post('rejection_remarks');
 
 		if($approval_status){
-			$res = $this->adminProcess->approveClaimProcess($claimCode/8191,$approval_status);
+
+			$check_status = $this->AdminProcess->checkStatus($claimCode/8191);
+
+			if ($check_status->rejection_status) {
+				$in = 3;
+				redirect('Admin/approveClaim/'.$in);
+			}
+			else{
+				$res = $this->AdminProcess->approveClaimProcess($claimCode/8191,$approval_status);
+
+				redirect('Admin/approveClaim/'.$res);
+			}
+			
 		}
-		else{
-			$res = $this->adminProcess->rejectClaimProcess($claimCode/8191,$rejection_status,$rejection_remarks);
+		elseif ($rejection_status) {
+			$check_status = $this->AdminProcess->checkStatus($claimCode/8191);
+			
+			if ($check_status->approval_status) {
+				$in = 4;
+				redirect('Admin/approveClaim/'.$in);
+			}
+			else{
+				$res = $this->AdminProcess->rejectClaimProcess($claimCode/8191,$rejection_status,$rejection_remarks);
+				redirect('Admin/approveClaim/'.$res);
+			}
 		}
 		
-		if($res){
-			$in = $res;
-				redirect('Admin/approveClaim/'.$in);
-		}else{
-			redirect('Admin/approveClaim');
-    	}
-		}
-    	else{
-			redirect('Admin/login');
-    	}
+	  }
+	  else{
+		redirect('Admin/login');
+	  }
 	}
 
 	public function edit_claim_ajax(){
@@ -196,9 +212,10 @@ class Admin extends CI_Controller {
 		$t_name = 'tm_claim';
 		$t_name1 = 'tm_claim_trans';
 		$t_name2 ='mm_employee';
-		$data['claim'] = $this->adminProcess->getDetailsbyClaimCd($id,$t_name);
-		$data['alldata'] = $this->adminProcess->getEmp($t_name2,$id);
-		$data['cltrans'] = $this->adminProcess->getClTransbyClaimCd($id,$t_name1);
+		$data['claim'] = $this->AdminProcess->getDetailsbyClaimCd($id,$t_name);
+		$data['alldata'] = $this->AdminProcess->getEmp($t_name2,$id);
+		$data['project_type'] = $this->AdminProcess->getProject_type($data['claim']->project_name);
+		$data['cltrans'] = $this->AdminProcess->getClTransbyClaimCd($id,$t_name1);
 
 		$this->load->view('SU/editClaimModal',$data);
 	}
@@ -211,7 +228,7 @@ class Admin extends CI_Controller {
     		$title['title'] = 'Claim-Project Type';
     		$in = $this->uri->segment(3);
     		$t_name ='mm_project_type';
-    		$result['alldata'] = $this->adminProcess->getAll($t_name);
+    		$result['alldata'] = $this->AdminProcess->getAll($t_name);
     		$result['proType'] = ' ';
     		if($result){
     			if(is_numeric($in)){
@@ -220,17 +237,17 @@ class Admin extends CI_Controller {
     			else{
     				$result['proType'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addProjectType',$result);
 				$this->load->view('templetes/welcome_footer');
     		}
     		else{
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addProjectType');
 				$this->load->view('templetes/welcome_footer');
@@ -249,7 +266,7 @@ class Admin extends CI_Controller {
     		$type_cd = $this->input->post('type_cd');
 			$type_desc = $this->input->post('type_desc');
 			
-			$res = $this->adminProcess->addProjectTypeProcess($type_cd,$type_desc);
+			$res = $this->AdminProcess->addProjectTypeProcess($type_cd,$type_desc);
 			if($res){
 				$in = 1;
 				redirect('Admin/addProjectType/'.$in);
@@ -270,7 +287,7 @@ class Admin extends CI_Controller {
     		$type_cd = $this->input->post('type_cd');
 			$type_desc = $this->input->post('type_desc');
 			
-			$res = $this->adminProcess->editProjectTypeProcess($id,$type_cd,$type_desc);
+			$res = $this->AdminProcess->editProjectTypeProcess($id,$type_cd,$type_desc);
 			if($res){
 				$in = 2;
 				redirect('Admin/addProjectType/'.$in);
@@ -287,11 +304,12 @@ class Admin extends CI_Controller {
 	public function edit_project_type_ajax(){
 		$id = $this->input->get('id');
 		$t_name = 'mm_project_type';
-		$data['project'] = $this->adminProcess->getDetailsbyId($id,$t_name);
+		$data['project'] = $this->AdminProcess->getDetailsbyId($id,$t_name);
 		$this->load->view('SU/editProjectTypeModal',$data);
 	}
 	public function add_project_type_ajax(){
-		$this->load->view('SU/addProjectTypeModal');
+	    $result['maxCode'] = $this->AdminProcess->maxCode('mm_project_type','type_cd');
+		$this->load->view('SU/addProjectTypeModal', $result);
 	}
 
 
@@ -300,12 +318,12 @@ class Admin extends CI_Controller {
 // For Adding Project Names...............................
 
 	public function addProjects(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M'){
     		$title['title'] = 'Claim-Projects';
     		$in = $this->uri->segment(3);
     		$t_name ='mm_project';
     		$result['project'] = ' ';
-    		$result['alldata'] = $this->adminProcess->getAll($t_name);
+    		$result['alldata'] = $this->AdminProcess->getAll($t_name);
     		if($result){
     			if(is_numeric($in)){
     				$result['project'] = $in;
@@ -313,17 +331,17 @@ class Admin extends CI_Controller {
     			else{
     				$result['project'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addProjects',$result);
 				$this->load->view('templetes/welcome_footer');
     		}
     		else{
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addProjects');
 				$this->load->view('templetes/welcome_footer');
@@ -337,12 +355,12 @@ class Admin extends CI_Controller {
 	}
 
 	public function addProjectProcess(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M'){
     		$project_cd = $this->input->post('project_cd');
 			$project_name = $this->input->post('project_name');
 			$project_type = $this->input->post('project_type');
 			$district = $this->input->post('district');
-			$res = $this->adminProcess->addProjectProcess($project_cd,$project_name,$project_type,$district);
+			$res = $this->AdminProcess->addProjectProcess($project_cd,$project_name,$project_type,$district);
 			if ($res) {
 				$in = 1;
 				redirect('Admin/addProjects/'.$in);
@@ -357,13 +375,13 @@ class Admin extends CI_Controller {
 	}
 
 	public function editProjectProcess(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M'){
 			$id = $this->input->post('id');
     		$project_cd = $this->input->post('project_cd');
 			$project_name = $this->input->post('project_name');
 			$project_type = $this->input->post('project_type');
 			$district = $this->input->post('district');
-			$res = $this->adminProcess->editProjectProcess($id,$project_cd,$project_name,$project_type,$district);
+			$res = $this->AdminProcess->editProjectProcess($id,$project_cd,$project_name,$project_type,$district);
 			if ($res) {
 				$in = 2;
 				redirect('Admin/addProjects/'.$in);
@@ -380,24 +398,25 @@ class Admin extends CI_Controller {
 	public function edit_project_ajax(){
 		$id = $this->input->get('id');
 		$t_name = 'mm_project';
-		$data['alldata'] = $this->adminProcess->getAll('mm_project_type');
-		$data['project'] = $this->adminProcess->getDetailsbyId($id,$t_name);
+		$data['alldata'] = $this->AdminProcess->getAll('mm_project_type');
+		$data['project'] = $this->AdminProcess->getDetailsbyId($id,$t_name);
 		$this->load->view('SU/editProjectModal',$data);
 	}
 	public function add_project_ajax(){
-		$result['alldata'] = $this->adminProcess->getAll('mm_project_type');
+		$result['alldata'] = $this->AdminProcess->getAll('mm_project_type');
+		$result['maxCode'] = $this->AdminProcess->maxCode('mm_project','project_cd');
 		$this->load->view('SU/addProjectModal',$result);
 	}
 
 //For Purpose..........................................
 
 	public function addPurpose(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC'){
     		$title['title'] = 'Claim-Purpose';
     		$in = $this->uri->segment(3);  
     		$t_name ='mm_purpose';
     		$result['purpose'] = ' ';
-    		$result['alldata'] = $this->adminProcess->getAll($t_name);
+    		$result['alldata'] = $this->AdminProcess->getAll($t_name);
     		if($result){
     			if(is_numeric($in)){
     				$result['purpose'] = $in;
@@ -405,17 +424,17 @@ class Admin extends CI_Controller {
     			else{
     				$result['purpose'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addPurpose',$result);
 				$this->load->view('templetes/welcome_footer');
     		}
     		else{
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addPurpose');
 				$this->load->view('templetes/welcome_footer');
@@ -428,11 +447,11 @@ class Admin extends CI_Controller {
 	}
 
 	public function addPurposeProcess(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC'){
 			$title['title'] = 'Claim-Purpose';
     		$purpose_id = $this->input->post('purpose_id');
 			$purpose_desc = $this->input->post('purpose_desc');
-			$res = $this->adminProcess->addPurposeProcess($purpose_id,$purpose_desc);
+			$res = $this->AdminProcess->addPurposeProcess($purpose_id,$purpose_desc);
 			if ($res) {
 				$in = 1;
 				redirect('Admin/addPurpose/'.$in);
@@ -447,11 +466,11 @@ class Admin extends CI_Controller {
 	}
 
 	public function editPurposeProcess(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC'){
 			$title['title'] = 'Claim-Purpose';
     		$purpose_id = $this->input->post('purpose_id');
 			$purpose_desc = $this->input->post('purpose_desc');
-			$res = $this->adminProcess->editPurposeProcess($purpose_id,$purpose_desc);
+			$res = $this->AdminProcess->editPurposeProcess($purpose_id,$purpose_desc);
 			if ($res) {
 				$in = 2;
 				redirect('Admin/addPurpose/'.$in);
@@ -468,7 +487,7 @@ class Admin extends CI_Controller {
 	public function edit_purpose_ajax(){
 		$id = $this->input->get('id');
 		$t_name = 'mm_purpose';
-		$data['purpose'] = $this->adminProcess->getDetailsbyId($id,$t_name);
+		$data['purpose'] = $this->AdminProcess->getDetailsbyId($id,$t_name);
 		$this->load->view('SU/editPurposeModal',$data);
 	}
 	public function add_purpose_ajax(){
@@ -479,11 +498,11 @@ class Admin extends CI_Controller {
 //For Claim Head..........................................
 
 	public function addClaimHead(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC'){
     		$title['title'] = 'Claim-Add Claim Head';
     		$t_name ='mm_claim_head';
     		$in = $this->uri->segment(3);
-    		$result['alldata'] = $this->adminProcess->getAll($t_name);
+    		$result['alldata'] = $this->AdminProcess->getAll($t_name);
     		if($result){
     			if(is_numeric($in)){
     				$result['cl_hd'] = $in;
@@ -491,18 +510,18 @@ class Admin extends CI_Controller {
     			else{
     				$result['cl_hd'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addClaimHead',$result);
 				$this->load->view('templetes/welcome_footer');
     		}
     		else{
     			$result['cl_hd'] = ' ';
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addClaimHead');
 				$this->load->view('templetes/welcome_footer');
@@ -515,11 +534,11 @@ class Admin extends CI_Controller {
 	}
 
 	public function addClaimHeadProcess(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC'){
 			$title['title'] = 'Claim-Add Claim Head';
     		$head_cd = $this->input->post('head_cd');
 			$head_desc = $this->input->post('head_desc');
-			$res = $this->adminProcess->addClaimHeadProcess($head_cd,$head_desc);
+			$res = $this->AdminProcess->addClaimHeadProcess($head_cd,$head_desc);
 			if ($res) {
 				$in = 1;
     			redirect('Admin/addClaimHead/'.$in);
@@ -534,11 +553,11 @@ class Admin extends CI_Controller {
 	}
 
 	public function editClaimHeadProcess(){
-		if($this->session->userdata('is_login')->user_type == 'A'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC'){
 			$title['title'] = 'Claim-Add Claim Head';
     		$head_cd = $this->input->post('head_cd');
 			$head_desc = $this->input->post('head_desc');
-			$res = $this->adminProcess->editClaimHeadProcess($head_cd,$head_desc);
+			$res = $this->AdminProcess->editClaimHeadProcess($head_cd,$head_desc);
 			if ($res) {
 				$in = 2;
     			redirect('Admin/addClaimHead/'.$in);
@@ -555,11 +574,12 @@ class Admin extends CI_Controller {
 	public function edit_claim_head_ajax(){
 		$id = $this->input->get('id');
 		$t_name = 'mm_claim_head';
-		$data['claim_head'] = $this->adminProcess->getDetailsbyId($id,$t_name);
+		$data['claim_head'] = $this->AdminProcess->getDetailsbyId($id,$t_name);
 		$this->load->view('SU/editClaimHeadModal',$data);
 	}
 	public function add_claim_head_ajax(){
-		$this->load->view('SU/addClaimHeadModal');
+	    $result['maxCode'] = $this->AdminProcess->maxCode('mm_claim_head','head_cd');
+		$this->load->view('SU/addClaimHeadModal', $result);
 	}
 
 
@@ -570,7 +590,7 @@ class Admin extends CI_Controller {
     		$title['title'] = 'Claim-Employee Details';
     		$in = $this->uri->segment(3);
     		$t_name ='mm_employee';
-    		$result['alldata'] = $this->adminProcess->getAll($t_name);
+    		$result['alldata'] = $this->AdminProcess->getAll($t_name);
     		$result['empExists'] = ' ';
     		if($result){
     			if(is_numeric($in)){
@@ -579,17 +599,17 @@ class Admin extends CI_Controller {
     			else{
     				$result['empExists'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addEmployee',$result);
 				$this->load->view('templetes/welcome_footer');
     		}
     		else{
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 				$this->load->view('SU/addEmployee');
 				$this->load->view('templetes/welcome_footer');
@@ -618,13 +638,13 @@ class Admin extends CI_Controller {
 			$sector = $_POST['sector'];
 			$designation = $_POST['designation'];
 
-			$res = $this->adminProcess->getDetailsbyEmpNo('mm_employee',$emp_no);
+			$res = $this->AdminProcess->getDetailsbyEmpNo('mm_employee',$emp_no);
 			if($res){
 				$in = 2;
     			redirect('Admin/addEmployee/'.$in);
 			}
 			else{
-				$res = $this->adminProcess->addEmpProcess($emp_no,$emp_name,$status,$date1,$date2,$sector,$designation);
+				$res = $this->AdminProcess->addEmpProcess($emp_no,$emp_name,$status,$date1,$date2,$sector,$designation);
 				if($res){
 					$in = 1;
     			redirect('Admin/addEmployee/'.$in);
@@ -652,7 +672,7 @@ class Admin extends CI_Controller {
 		
 		$sector = $this->input->post('sector');
 		$designation = $this->input->post('designation');
-		$data = $this->adminProcess->editEmployeeProcess($emp_no,$emp_name,$status,$date1,$date2,$sector,$designation);
+		$data = $this->AdminProcess->editEmployeeProcess($emp_no,$emp_name,$status,$date1,$date2,$sector,$designation);
 		if($data){
 			$in = 3;
     			redirect('Admin/addEmployee/'.$in);
@@ -665,7 +685,7 @@ class Admin extends CI_Controller {
 	public function edit_employee_ajax(){
 		$id = $this->input->get('id');
 		$t_name ='mm_employee';
-		$data['employee'] = $this->adminProcess->getDetailsbyEmpNo($t_name,$id);
+		$data['employee'] = $this->AdminProcess->getDetailsbyEmpNo($t_name,$id);
 		$this->load->view('SU/edit_employee_modal',$data);
 	}
 
@@ -687,11 +707,11 @@ class Admin extends CI_Controller {
     				$result['m_user'] = ' ';
     			}
 			$title['title'] = 'Claim-User Maintenance';
-			$result['alldata'] = $this->adminProcess->getAll('m_user_master');
+			$result['alldata'] = $this->AdminProcess->getAll('m_user_master');
 
-			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-	    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-	    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+	    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+	    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 			$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('SU/userMaintenance',$result);
 			$this->load->view('templetes/welcome_footer');
@@ -704,14 +724,14 @@ class Admin extends CI_Controller {
 	public function edit_user_ajax(){
 		$id = $this->input->get('id');
 		
-		$data['user'] = $this->adminProcess->getDetailsbyEmpNo('m_user_master',$id);
-		$data['emp_dtls'] = $this->adminProcess->getAll('mm_employee');
-		$data['data'] = $this->adminProcess->getDetailsbyEmpNo('mm_manager',$id);
+		$data['user'] = $this->AdminProcess->getDetailsbyEmpNo('m_user_master',$id);
+		$data['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
+		$data['data'] = $this->AdminProcess->getDetailsbyEmpNo('mm_manager',$id);
 		$this->load->view('SU/editUserModal',$data);
 	}
 
 	public function add_user_ajax(){
-		$result['emp_dtls'] = $this->adminProcess->getAll('mm_employee');
+		$result['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
 		$this->load->view('SU/addUserModal',$result);
 	}
 
@@ -723,24 +743,23 @@ class Admin extends CI_Controller {
 		$pass = $this->input->post('pass');
 		$password = password_hash($pass, PASSWORD_DEFAULT);
 		$status = $this->input->post('status');
-		$res = $this->adminProcess->getDetailsbyEmpNo('mm_employee',$emp_no);
+		$res = $this->AdminProcess->getDetailsbyEmpNo('mm_employee',$emp_no);
 
 		$empno = implode('#',$this->input->post('empno'));
 		$eno = explode('#', $empno);
-
 
 		if(!$res){
 			$in = 3;
 			redirect('Admin/userMaintenance/'.$in);
 		}else{
-			$res = $this->adminProcess->getDetailsbyEmpNo('m_user_master',$emp_no);
+			$res = $this->AdminProcess->getDetailsbyEmpNo('m_user_master',$emp_no);
 			if(!$res){
-				if ($user_type != 'E') {
+				if ($eno[1] != 'Select' || $user_type != 'E') {
 					for ($i=0; $i < sizeof($eno); $i++) 
-					$this->adminProcess->addManager($emp_no,$eno[$i]);
+					$this->AdminProcess->addManager($emp_no,$eno[$i]);
 				}
 				
-				$res = $this->adminProcess->addUserProcess($emp_no,$user_type,$f_name,$m_name,$l_name,$user_id,$password,$status);
+				$res = $this->AdminProcess->addUserProcess($emp_no,$user_type,$f_name,$m_name,$l_name,$user_id,$password,$status);
 				if($res){
 					$in = 1;
 		    			redirect('Admin/userMaintenance/'.$in);
@@ -763,21 +782,28 @@ class Admin extends CI_Controller {
 		$user_type = $this->input->post('user_type');
 		$user_id = $this->input->post('user_id');
 		$status = $this->input->post('status');
+		$pass = $this->input->post('pass');
+		if($pass != "noVal"){
+		    $defaultPassword = password_hash($pass, PASSWORD_DEFAULT);    
+		}
+		else{
+		    $defaultPassword = null;
+		}
 		//$misRows = implode(',',$this->input->post('rmv_slno'));
 		$empno = implode('#',$this->input->post('empno'));
-
+        
 		//$array_sl_no = explode(',',$misRows);
 		$eno = explode('#', $empno);
 
-		$this->adminProcess->delRow($emp_no);
+		$this->AdminProcess->delRow($emp_no);
 
 		if ($status == 'E') {
-			$res = $this->adminProcess->editUserProcess($emp_no,$user_type,$user_id,$status);
+			$res = $this->AdminProcess->editUserProcess($emp_no,$user_type,$user_id,$status,$defaultPassword);
 		}else{
 			for ($i=0; $i < sizeof($eno); $i++) {
-				$this->adminProcess->addManager($emp_no,$eno[$i]);
+				$this->AdminProcess->addManager($emp_no,$eno[$i]);
 			}
-			$res = $this->adminProcess->editUserProcess($emp_no,$user_type,$user_id,$status);
+			$res = $this->AdminProcess->editUserProcess($emp_no,$user_type,$user_id,$status,$defaultPassword);
 		}
 		
 		if($res){
@@ -796,7 +822,7 @@ class Admin extends CI_Controller {
     		$title['title'] = 'Claim-Payment';
     		$t_name ='tm_payment';
     		$in = $this->uri->segment(3);
-    		$result['alldata'] = $this->adminProcess->getAll($t_name);
+    		$result['alldata'] = $this->AdminProcess->getAll($t_name);
     		if ($result) {
     			if(is_numeric($in)){
     				$result['pay'] = $in;
@@ -804,18 +830,18 @@ class Admin extends CI_Controller {
     			else{
     				$result['pay'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('SU/payment',$result);
 			$this->load->view('templetes/welcome_footer');
     		}
     		else{
     			$result['pay'] = ' ';
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('SU/payment');
 			$this->load->view('templetes/welcome_footer');
@@ -832,7 +858,7 @@ class Admin extends CI_Controller {
 			date_default_timezone_set('Asia/kolkata');
 			$t_name ='tm_payment';
 			$prvId = 0;
-			$maxCode = $this->adminProcess->maxCode($t_name,'trans_cd');
+			$maxCode = $this->AdminProcess->maxCode($t_name,'trans_cd');
   			$curYr = date("Y");
   			if ($maxCode->trans_cd) {
   				$finYr = substr($maxCode->trans_cd, 0,4);
@@ -869,7 +895,7 @@ class Admin extends CI_Controller {
 		$bank = $this->input->post('bank');
 		$amount = $this->input->post('amount');
 		
-		$res = $this->adminProcess->addPaymentProcess($trans_cd,$emp_no,$chq_dt,$pay_mode,$pay_type,$chq_no,$bank,$amount);
+		$res = $this->AdminProcess->addPaymentProcess($trans_cd,$emp_no,$chq_dt,$pay_mode,$pay_type,$chq_no,$bank,$amount);
 		if($res){
 				$in = 1;
 						redirect('Admin/payment/'.$in);
@@ -904,7 +930,7 @@ class Admin extends CI_Controller {
 			$bank = $this->input->post('bank');
 			$amount = $this->input->post('amount');
 
-			$res = $this->adminProcess->editPaymentProcess($trans_cd/8191,$emp_no,$chq_dt,$pay_mode,$pay_type,$chq_no,$bank,$amount);
+			$res = $this->AdminProcess->editPaymentProcess($trans_cd/8191,$emp_no,$chq_dt,$pay_mode,$pay_type,$chq_no,$bank,$amount);
 			if($res){
 				$in = 2;
 				redirect('Admin/payment/'.$in);
@@ -918,16 +944,47 @@ class Admin extends CI_Controller {
 	}
 
 	public function add_payment_ajax(){
-		$result['emp_dtls'] = $this->adminProcess->getAll('mm_employee');
+		$result['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
 		$this->load->view('SU/addPaymentModal',$result);
 	}
 
 	public function edit_payment_ajax(){
 		$id = $this->input->get('id');
 		$t_name ='tm_payment';
-		$data['emp_dtls'] = $this->adminProcess->getAll('mm_employee');
-		$data['payment'] = $this->adminProcess->getDetailsbyTransCd($id,$t_name);
+		$data['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
+		$data['payment'] = $this->AdminProcess->getDetailsbyTransCd($id,$t_name);
 		$this->load->view('SU/editPaymentModal',$data);
+	}
+	
+	public function deletePaymentProcess(){
+		if($this->session->userdata('loggedin')){
+			$id = $this->input->post('del');
+			$t_name = 'tm_payment';
+			$res = $this->AdminProcess->deletePaymentProcess($id/8191, $t_name);
+			
+			if($res){
+				$in = 3;
+						redirect('Admin/payment/'.$in);
+			}else{
+				redirect('Admin/payment');
+	    	}
+		}
+		else{
+			redirect('Admin/payment');
+    	}
+	}
+
+	public function del_payment_ajax(){
+		$id = $this->input->get('id');
+		$t_name = 'tm_payment';
+		$data['payment'] = $this->AdminProcess->getDetailsbyTransCd($id,$t_name);
+		$this->load->view('SU/deletePaymentModal', $data);
+	}
+	
+	public function closing_bal(){
+		$emp_no = $this->input->get('emp_no');
+		$result = $this->AdminProcess->admin_closing_balance($emp_no);
+		echo $result->balance_amt;
 	}
 
 // For Approval Payments..........................................
@@ -937,7 +994,7 @@ class Admin extends CI_Controller {
     		$title['title'] = 'Claim-Payment-Approval';
     		$t_name ='tm_payment';
     		$in = $this->uri->segment(3);
-    		$result['alldata'] = $this->adminProcess->getAll($t_name);
+    		$result['alldata'] = $this->AdminProcess->getAll($t_name);
     		if ($result) {
     			if(is_numeric($in)){
     				$result['paid'] = $in;
@@ -945,18 +1002,18 @@ class Admin extends CI_Controller {
     			else{
     				$result['paid'] = ' ';
     			}
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('SU/approvePayment',$result);
 			$this->load->view('templetes/welcome_footer');
     		}
     		else{
     			$result['paid'] = ' ';
-    			$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    			$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    			$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+    			$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    			$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    			$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     			$this->load->view('templetes/welcome_header',$title);
 			$this->load->view('SU/approvePayment');
 			$this->load->view('templetes/welcome_footer');
@@ -969,10 +1026,10 @@ class Admin extends CI_Controller {
 	}
 
 	public function	approvePaymentProcess(){
-		if($this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 			$trans_cd = $this->input->post('trans_cd');
 			$status = $this->input->post('check');
-			$res = $this->adminProcess->approvePaymentProcess($trans_cd/8191,$status);
+			$res = $this->AdminProcess->approvePaymentProcess($trans_cd/8191,$status);
 			if($res){
 				$in = 1;
 				redirect('Admin/approvePayment/'.$in);
@@ -988,8 +1045,8 @@ class Admin extends CI_Controller {
 	public function approve_payment_ajax(){
 		$trans_cd = $this->input->get('id');
 		$t_name ='tm_payment';
-		$data['emp_dtls'] = $this->adminProcess->getAll('mm_employee');
-		$data['payment'] = $this->adminProcess->getDetailsbyTransCd($trans_cd,$t_name);
+		$data['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
+		$data['payment'] = $this->AdminProcess->getDetailsbyTransCd($trans_cd,$t_name);
 		$this->load->view('SU/approvePaymentModal',$data);
 
 	}
@@ -998,7 +1055,7 @@ class Admin extends CI_Controller {
 //For Reports.......................................................
 
 	public function projectWiseExpence(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 
 		$title['title'] = 'Claim-Project Wise Expence';
 		$date1_temp = DateTime::createFromFormat('d/m/Y',$_POST['date1']);
@@ -1008,18 +1065,19 @@ class Admin extends CI_Controller {
 		$to_date = $date2_temp->format('Y-m-d');
 
 		$project_name = $this->input->post('projectName');
-
-		$data['alldata'] = $this->adminProcess->reportProcess($from_date,$to_date);
-		$data['date'] = $this->adminProcess->get_dt();
+		$data['project_name'] = $project_name;
+		$data['alldata'] = $this->AdminProcess->reportProcess($from_date,$to_date);
+		$data['date'] = $this->AdminProcess->get_dt();
 		
-		$data['pwExpence'] = $this->adminProcess->pwExpence($project_name,$from_date,$to_date);
+		$data['pwExpence'] = $this->AdminProcess->pwExpence($project_name,$from_date,$to_date);
+		$data['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
     	
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
     	
-		$this->load->view('templetes/welcome_header',$title);
-		$this->load->view('SU/projectWiseExpence',$data);
+		$this->load->view('templetes/welcome_header', $title);
+		$this->load->view('SU/projectWiseExpence', $data);
 		$this->load->view('templetes/welcome_footer');
 		}
 		else{
@@ -1029,14 +1087,14 @@ class Admin extends CI_Controller {
 
 	public function pwe_dtl_ajax(){
     	$t_name ='mm_project';
-		$result['project_name'] = $this->adminProcess->getAll($t_name);
+		$result['project_name'] = $this->AdminProcess->getAll($t_name);
 		$this->load->view('SU/pweModal',$result);
     }
 
 //Purpose Wise Expence........................................................
 
     public function purposeWiseExpence(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 
 		$title['title'] = 'Claim-Purpose Wise Expence';
 		$date1_temp = DateTime::createFromFormat('d/m/Y',$_POST['date1']);
@@ -1044,15 +1102,13 @@ class Admin extends CI_Controller {
 
 		$date2_temp = DateTime::createFromFormat('d/m/Y',$_POST['date2']);
 		$to_date = $date2_temp->format('Y-m-d');
-
-		$data['date'] = $this->adminProcess->get_dt();
 		
-		$data['prwExpence'] = $this->adminProcess->prwExpence($from_date,$to_date);
-		$data['row'] = $this->adminProcess->countPRWE($from_date,$to_date);
-
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$data['prwExpence'] = $this->AdminProcess->prwExpence($from_date,$to_date);
+		$data['row'] = $this->AdminProcess->countPRWE($from_date,$to_date);
+        $data['date'] = $this->AdminProcess->get_dt();
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 		$this->load->view('templetes/welcome_header',$title);
 		$this->load->view('SU/purposeWiseExpence',$data);
 		$this->load->view('templetes/welcome_footer');
@@ -1066,10 +1122,50 @@ class Admin extends CI_Controller {
 		$this->load->view('SU/prpsWEModal');
     }
 
+
+//For All Payment Details.........................................................
+
+	public function allPaymentDetails(){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
+
+		$title['title'] = 'Claim-Payment Details';
+		$t_name = 'mm_employee';
+		$date1_temp = DateTime::createFromFormat('d/m/Y',$_POST['date1']);
+		$from_date = $date1_temp->format('Y-m-d');
+
+		$date2_temp = DateTime::createFromFormat('d/m/Y',$_POST['date2']);
+		$to_date = $date2_temp->format('Y-m-d');
+		$emp_no = $this->input->post('emp_no');
+
+		$data['alldata'] = $this->AdminProcess->allPaymentDetails($from_date,$to_date);
+		$data['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
+		$data['date'] = $this->AdminProcess->get_dt();
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
+
+		$this->load->view('templetes/welcome_header',$title);
+		$this->load->view('SU/allPaymentDetails',$data);
+		$this->load->view('templetes/welcome_footer');
+		}
+		else{
+			redirect('Admin/login');
+		}
+	}
+
+    	
+    public function all_payment_dtl_ajax(){
+    	$result['dtls'] = $this->AdminProcess->getAll('mm_employee');
+		$this->load->view('SU/allPaymentDtlModal', $result);
+    }
+
+
+
+
 //For Payment Details.........................................................
 
 	public function paymentDetails(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 
 		$title['title'] = 'Claim-Personal Ledger';
 		$t_name = 'mm_employee';
@@ -1080,12 +1176,12 @@ class Admin extends CI_Controller {
 		$to_date = $date2_temp->format('Y-m-d');
 		$emp_no = $this->input->post('emp_no');
 
-		$data['alldata'] = $this->adminProcess->paymentDetails($from_date,$to_date,$emp_no);
-		$data['emp_dtls'] = $this->adminProcess->getDetailsbyEmpNo($t_name,$emp_no);
-		$data['date'] = $this->adminProcess->get_dt();
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$data['alldata'] = $this->AdminProcess->paymentDetails($from_date,$to_date,$emp_no);
+		$data['emp_dtls'] = $this->AdminProcess->getDetailsbyEmpNo($t_name,$emp_no);
+		$data['date'] = $this->AdminProcess->get_dt();
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 
 		$this->load->view('templetes/welcome_header',$title);
 		$this->load->view('SU/paymentDetails',$data);
@@ -1098,16 +1194,16 @@ class Admin extends CI_Controller {
 
     	
     public function payment_dtl_ajax(){
-    	$result['dtls'] = $this->adminProcess->getEmpForManager();
+    	$result['dtls'] = $this->AdminProcess->getAll('mm_employee');
 		$this->load->view('SU/paymentDtlModal',$result);
     }
 
 //For Claim Details............................................................
 
 	public function claimDetails(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 
-		$title['title'] = 'Claim-Details';
+		$title['title'] = 'Emp wise Claim-Details';
 		$t_name = 'mm_employee';
 		$date1_temp = DateTime::createFromFormat('d/m/Y',$_POST['date1']);
 		$from_date = $date1_temp->format('Y-m-d');
@@ -1118,14 +1214,14 @@ class Admin extends CI_Controller {
 		$emp_no = $this->input->post('emp_no');
 		
 		$this->session->set_userdata('enoFrCdtl',$emp_no);
-		$data['alldata'] = $this->adminProcess->claimDetails($from_date,$to_date,$emp_no);
+		$data['alldata'] = $this->AdminProcess->claimDetails($from_date,$to_date,$emp_no);
 		
-		$data['emp_dtls'] = $this->adminProcess->getDetailsbyEmpNo($t_name,$emp_no);
-		$data['date'] = $this->adminProcess->get_dt();
+		$data['emp_dtls'] = $this->AdminProcess->getDetailsbyEmpNo($t_name,$emp_no);
+		$data['date'] = $this->AdminProcess->get_dt();
 		
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 		$this->load->view('templetes/welcome_header',$title);
 		$this->load->view('SU/claimAdminDetails',$data);
 		$this->load->view('templetes/welcome_footer');
@@ -1136,14 +1232,14 @@ class Admin extends CI_Controller {
 	}
 
 	public function claim_dtl_ajax(){
-    	$result['dtls'] = $this->adminProcess->getEmpForManager();
+    	$result['dtls'] = $this->AdminProcess->getEmpForManager();
 		$this->load->view('SU/claimAdminDtlModal',$result);
     }
 
 //For Closing Balance.............................................Report
 
 	public function closing_balance(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 
 		$title['title'] = 'Claim-Closing Balance';
 		$t_name = 'mm_employee';
@@ -1156,14 +1252,14 @@ class Admin extends CI_Controller {
 		$emp_no = $this->input->post('emp_no');
 		
 		$this->session->set_userdata('enoFrCdtl',$emp_no);
-		$data['alldata'] = $this->adminProcess->closingBalance($from_date,$to_date);
+		$data['alldata'] = $this->AdminProcess->closingBalance($from_date,$to_date);
 		
-		$data['emp_dtls'] = $this->adminProcess->getAll($t_name);
-		$data['date'] = $this->adminProcess->get_dt();
+		$data['emp_dtls'] = $this->AdminProcess->getAll($t_name);
+		$data['date'] = $this->AdminProcess->get_dt();
 		
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 		$this->load->view('templetes/welcome_header',$title);
 		$this->load->view('SU/closingBalance',$data);
 		$this->load->view('templetes/welcome_footer');
@@ -1187,29 +1283,31 @@ class Admin extends CI_Controller {
 		$t_name = 'tm_claim';
 		$t_name1 = 'tm_claim_trans';
 		$t_name2 = 'mm_employee';
-		$data['claim'] = $this->adminProcess->getDetailsbyClaimCd($id,$t_name);
-		$data['cltrans'] = $this->adminProcess->getClTransbyClaimCd($id,$t_name1);
-		$data['emp_dtls'] = $this->adminProcess->getDetailsbyEmpNo($t_name2,$emp_no);
+		$data['claim'] = $this->AdminProcess->getDetailsbyClaimCd($id,$t_name);
+		$data['cltrans'] = $this->AdminProcess->getClTransbyClaimCd($id,$t_name1);
+		$data['emp_dtls'] = $this->AdminProcess->getDetailsbyEmpNo($t_name2,$emp_no);
 		$this->load->view('SU/indClaimDetailsModal',$data);
 	}
 
   //For Employee Balance.........................
 
 	public function empBalance(){
+	  if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 		$title['title'] = 'Claim-Employee Balance';
 
 		$date1_temp = DateTime::createFromFormat('d/m/Y',$_POST['date1']);
 		$from_date = $date1_temp->format('Y-m-d');
 
-		$result['emp_dtls'] = $this->adminProcess->getAll('mm_employee');
-		$result['empBalance'] = $this->adminProcess->empBalance($from_date);
+		$result['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
+		$result['empBalance'] = $this->AdminProcess->empBalance($from_date);
 		
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 		$this->load->view('templetes/welcome_header',$title);
 		$this->load->view('SU/empBalance',$result);
 		$this->load->view('templetes/welcome_footer');
+	  }
 	}
 
 	public function emp_balance_ajax(){	
@@ -1219,7 +1317,7 @@ class Admin extends CI_Controller {
 
 //For Total Claim Details............................................
 	public function totalClaimDetails(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 
 		$title['title'] = 'Claim-All Details';
 		$t_name = 'mm_employee';
@@ -1232,13 +1330,14 @@ class Admin extends CI_Controller {
 		$emp_no = $this->input->post('emp_no');
 		
 		$this->session->set_userdata('enoFrCdtl',$emp_no);
-		$data['alldata'] = $this->adminProcess->totalClaimDetails($from_date,$to_date);
+		$data['alldata'] = $this->AdminProcess->totalClaimDetails($from_date,$to_date);
 		
-		$data['date'] = $this->adminProcess->get_dt();
+		$data['date'] = $this->AdminProcess->get_dt();
 		
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$title['emp_dtls'] = $this->AdminProcess->getAll('mm_employee');
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 		$this->load->view('templetes/welcome_header',$title);
 		$this->load->view('SU/totalClaimDetails',$data);
 		$this->load->view('templetes/welcome_footer');
@@ -1257,7 +1356,7 @@ class Admin extends CI_Controller {
 	}
 
 	public function distWiseExpence(){
-		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC'){
+		if($this->session->userdata('is_login')->user_type == 'A' || $this->session->userdata('is_login')->user_type == 'M' || $this->session->userdata('is_login')->user_type == 'AC' || $this->session->userdata('is_login')->user_type == 'AU'){
 
 		$title['title'] = 'Claim-District Wise Exp';
 		
@@ -1270,13 +1369,13 @@ class Admin extends CI_Controller {
 		$emp_no = $this->input->post('emp_no');
 		
 		$this->session->set_userdata('enoFrCdtl',$emp_no);
-		$data['alldata'] = $this->adminProcess->distWiseExpence($from_date,$to_date);
-		$data['project'] = $this->adminProcess->distinctDist();
-		$data['date'] = $this->adminProcess->get_dt();
+		$data['alldata'] = $this->AdminProcess->distWiseExpence($from_date,$to_date);
+		$data['project'] = $this->AdminProcess->distinctDist();
+		$data['date'] = $this->AdminProcess->get_dt();
 		
-		$title['total_claim'] = $this->adminProcess->countClaim('mm_manager');
-    	$title['total_payment'] = $this->adminProcess->countRow('tm_payment');
-    	$title['total_reject'] = $this->process->countRejClaim('tm_claim');
+		$title['total_claim'] = $this->AdminProcess->countClaim('mm_manager');
+    	$title['total_payment'] = $this->AdminProcess->countRow('tm_payment');
+    	$title['total_reject'] = $this->Process->countRejClaim('tm_claim');
 		$this->load->view('templetes/welcome_header', $title);
 		$this->load->view('SU/distWiseExpence', $data);
 		$this->load->view('templetes/welcome_footer');
@@ -1285,5 +1384,4 @@ class Admin extends CI_Controller {
 			redirect('Admin/login');
 		}
 	}
-
 }
